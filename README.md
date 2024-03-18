@@ -1,5 +1,5 @@
 
-# HLT Phont studies
+# HLT Photon studies
 
 ## Setup
 Setup the release, import HLTrigger package, compile
