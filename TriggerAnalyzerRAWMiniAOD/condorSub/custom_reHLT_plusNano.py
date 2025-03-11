@@ -25,15 +25,33 @@ process.load('PhysicsTools.NanoAOD.nano_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
+import FWCore.ParameterSet.VarParsing as VarParsing # ADDED                                                                                                          
+import FWCore.Utilities.FileUtils as FileUtils # ADDED
+
+options = VarParsing.VarParsing ('analysis')
+
+options.register('skipEvents',
+                 0,
+                 VarParsing.VarParsing.multiplicity.singleton,
+                 VarParsing.VarParsing.varType.int,
+                 "Number of events to skip")
+options.register('outFile',
+                 'outputGGH20.root',
+                 VarParsing.VarParsing.multiplicity.singleton,
+                 VarParsing.VarParsing.varType.string,
+                 'Output file')
+
+options.parseArguments()
+
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100),
-    output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
+    input = cms.untracked.int32(options.maxEvents)
 )
 
-# Input source
-process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/data/Run2024I/EGamma0/RAW-RECO/ZElectron-PromptReco-v2/000/386/694/00000/05ad2e1f-93d3-4e3e-98a5-e5c911bc410b.root'),
-    secondaryFileNames = cms.untracked.vstring()
+process.source = cms.Source( "PoolSource",
+    skipEvents = cms.untracked.uint32(options.skipEvents),
+    fileNames = cms.untracked.vstring(
+        options.inputFiles
+    )
 )
 
 process.options = cms.untracked.PSet(
@@ -84,7 +102,7 @@ process.NANOAODoutput = cms.OutputModule("NanoAODOutputModule",
         dataTier = cms.untracked.string('NANOAOD'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('file:out.root'),
+    fileName = cms.untracked.string('file:out_nano.root'),
     outputCommands = process.NANOAODEventContent.outputCommands
 )
 
@@ -132,13 +150,13 @@ process.nanoAOD_step = cms.Path(process.nanoSequence)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 process.NANOAODoutput_step = cms.EndPath(process.NANOAODoutput)
 
-process.demo = cms.EDAnalyzer('TriggerAnalyzerRAWMiniAOD',                                                                      
-                              UseMINIAOD = cms.bool(True)                                                                                                
-)                                                                         
-process.TFileService = cms.Service("TFileService",                                                                               
-                                   fileName = cms.string( "out_nanoCustom.root" )                                                                        
-                                   )                                                                              
-process.demo_step = cms.EndPath(process.demo)
+process.demo = cms.EDAnalyzer('TriggerAnalyzerRAWMiniAOD',                                                                            
+                              UseMINIAOD = cms.bool(True)                                                                                                                   
+)                                                                                                                                                                                                                  
+process.TFileService = cms.Service("TFileService",                                                                                                                           
+                                   fileName = cms.string( "out_nanoCustom.root" )                                                                                                            
+                                   )                                                                                                                                                       
+process.demo_step = cms.EndPath(process.demo)                                                                                                           
 
 # Schedule definition
 # process.schedule imported from cff in HLTrigger.Configuration

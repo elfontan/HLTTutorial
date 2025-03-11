@@ -25,11 +25,11 @@ scram b -j4
 
 Obtain the configuration file from the dedicated menu with the following recipe:
 ```
-hltGetConfiguration --cff /users/elfontan/2025DiphotonPath/1420_GRun11/HLT/V4 --globaltag auto:run3_data_prompt --path HLTriggerFirstPath,HLTriggerFinalPath,HLT_Photon14_Loose_v8,HLT_Ele35_WPTight_Gsf_v19,HLT_Photon50EB_TightID_TightIso_v8,HLT_Diphoton20_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton20_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton22_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton24_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton24_16_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10 --unprescale &> HLT_2025DiphotonPathPUCorr_cff.py
+hltGetConfiguration --cff /users/elfontan/2025DiphotonPath/1420_GRun11/HLT/V6 --globaltag auto:run3_data_prompt --path HLTriggerFirstPath,HLTriggerFinalPath,HLT_Photon14_Loose_v8,HLT_Ele35_WPTight_Gsf_v19,HLT_Photon50EB_TightID_TightIso_v8,HLT_Diphoton20_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton20_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton22_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton24_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton24_16_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10 --unprescale &> HLT_2025DiphotonPathPUCorr_cff.py
 ```
 and move it in the `HLTrigger/Configuration` area to be able to use it as a customisation in a cmsDriver command: 
 ```
-mv  HLTTutorial/TriggerAnalyzerRAWMiniAOD/python/HLT_2025DiphotonPathPUCorr_cff.py HLTrigger/Configuration/python/HLT_Custom_cff.py
+cp  HLTTutorial/TriggerAnalyzerRAWMiniAOD/python/HLT_2025DiphotonPathPUCorr_cff.py HLTrigger/Configuration/python/HLT_Custom_cff.py
 ```
 Run cmsDriver command to build the chain down to nanoAOD:
 ```
