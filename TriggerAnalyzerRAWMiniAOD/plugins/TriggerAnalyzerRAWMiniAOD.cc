@@ -115,12 +115,14 @@ class TriggerAnalyzerRAWMiniAOD : public edm::one::EDAnalyzer<edm::one::SharedRe
   //Rerun HLT decisions
   bool HLT_Ele35_WPTight_Gsf;
   bool HLT_Photon50EB_TightID_TightIso;
+  bool HLT_Photon14EB_Loose;
   
   //Original HLT decisions
   bool HLT_IsoMu24_ORIG;
   bool HLT_Ele32_WPTight_Gsf_ORIG;
   bool HLT_Ele35_WPTight_Gsf_ORIG;
   bool HLT_Photon50EB_TightID_TightIso_ORIG;
+  bool HLT_Photon14EB_Loose_ORIG;
   bool HLT_Photon110EB_TightID_TightIso_ORIG;
   vector<float> probe_ele_pt;
   vector<float> probe_ele_eta;
@@ -191,6 +193,14 @@ TriggerAnalyzerRAWMiniAOD::TriggerAnalyzerRAWMiniAOD(const edm::ParameterSet& iC
   photontight_hcaliso_Var_Token_  = consumes<edm::AssociationMap<edm::OneToValue<std::vector<reco::RecoEcalCandidate>, float > > > ( edm::InputTag("hltEgammaHcalPFClusterIso","","HLT2")  );
   photontight_trackiso_Var_Token_  = consumes<edm::AssociationMap<edm::OneToValue<std::vector<reco::RecoEcalCandidate>, float > > > ( edm::InputTag("hltEgammaHollowTrackIso","","HLT2")  );
   photontight_l1_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEGL1SingleIsoEG28to45Filter","","HLT2") ) ;
+  photontight_et_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEG14DummyFilter","","HLT2") ) ;
+  photontight_showershape_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEG14DummyClusterShapeFilter","","HLT2") );
+  photontight_hoe_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEG14DummyHEFilter","","HLT2") );
+  photontight_r9_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEG14DummyR9Filter","","HLT2") );
+  photontight_ecaliso_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEG14DummyEcalIsoFilter","","HLT2") );
+  photontight_hcaliso_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEG14DummyHcalIsoFilter","","HLT2") );
+  photontight_trackiso_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEG14DummyTrackIsoFilter","","HLT2") );
+  /*
   photontight_et_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEG50EBTightIDTightIsoEtFilter","","HLT2") ) ;
   photontight_showershape_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEG50EBTightIDTightIsoClusterShapeFilter","","HLT2") );
   photontight_hoe_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEG50EBTightIDTightIsoHEFilter","","HLT2") );
@@ -198,7 +208,10 @@ TriggerAnalyzerRAWMiniAOD::TriggerAnalyzerRAWMiniAOD(const edm::ParameterSet& iC
   photontight_ecaliso_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEG50EBTightIDTightIsotEcalIsoFilter","","HLT2") );
   photontight_hcaliso_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEG50EBTightIDTightIsoHcalIsoFilter","","HLT2") );
   photontight_trackiso_Filter_Token_ = consumes<trigger::TriggerFilterObjectWithRefs> ( edm::InputTag("hltEG50EBTightIDTightIsoTrackIsoFilter","","HLT2") );
-  
+  */
+  //electron_token = consumes<std::vector<reco::Electron> >(edm::InputTag("gedGsfElectrons") );
+  //photon_token = consumes<std::vector<reco::Photon> >(edm::InputTag("gedPhotons") );
+  //PV_token = consumes<std::vector<reco::Vertex> > (edm::InputTag("offlinePrimaryVertices"));
   electron_token = consumes<std::vector<pat::Electron> >(edm::InputTag("slimmedElectrons") );
   photon_token = consumes<std::vector<pat::Photon> >(edm::InputTag("slimmedPhotons") );
   PV_token = consumes<std::vector<reco::Vertex> > (edm::InputTag("offlineSlimmedPrimaryVertices"));
@@ -237,11 +250,13 @@ TriggerAnalyzerRAWMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSet
   
   HLT_Ele35_WPTight_Gsf= false;
   HLT_Photon50EB_TightID_TightIso= false;
+  HLT_Photon14EB_Loose= false;
 
   HLT_IsoMu24_ORIG=false;
   HLT_Ele32_WPTight_Gsf_ORIG=false;
   HLT_Ele35_WPTight_Gsf_ORIG=false;
   HLT_Photon50EB_TightID_TightIso_ORIG=false;
+  HLT_Photon14EB_Loose_ORIG=false;
   HLT_Photon110EB_TightID_TightIso_ORIG=false;
 
 
@@ -263,6 +278,7 @@ TriggerAnalyzerRAWMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	if(TrigPath.Index("HLT_Ele32_WPTight_Gsf_v") >=0) HLT_Ele32_WPTight_Gsf_ORIG=true;
 	if(TrigPath.Index("HLT_Ele35_WPTight_Gsf_v") >=0) HLT_Ele35_WPTight_Gsf_ORIG=true;
 	if(TrigPath.Index("HLT_Photon50EB_TightID_TightIso_v") >=0) HLT_Photon50EB_TightID_TightIso_ORIG=true;
+	if(TrigPath.Index("HLT_Photon14EB_Loose_v") >=0) HLT_Photon14EB_Loose_ORIG=true;
 	if(TrigPath.Index("HLT_Photon110EB_TightID_TightIso_v") >=0) HLT_Photon110EB_TightID_TightIso_ORIG=true;
       }
     }
@@ -280,6 +296,7 @@ TriggerAnalyzerRAWMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSet
 	//      cout << "Passed path: " << TrigPath<<endl;
 	if(TrigPath.Index("HLT_Ele35_WPTight_Gsf_v") >=0) HLT_Ele35_WPTight_Gsf=true;
 	if(TrigPath.Index("HLT_Photon50EB_TightID_TightIso_v") >=0) HLT_Photon50EB_TightID_TightIso=true;
+	if(TrigPath.Index("HLT_Photon14EB_Loose_v") >=0) HLT_Photon14EB_Loose=true;
       }
     }
   }
@@ -306,9 +323,11 @@ TriggerAnalyzerRAWMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSet
       n_goodvertex ++;
     }
     edm::Handle< std::vector<pat::Electron> > electrons;
+    //edm::Handle< std::vector<reco::Electron> > electrons;
     iEvent.getByToken(electron_token,electrons );
     //First loop to find a tag electron
     for( std::vector<pat::Electron>::const_iterator tagele = (*electrons).begin(); tagele != (*electrons).end(); tagele++ ) {
+      //for( std::vector<reco::Electron>::const_iterator tagele = (*electrons).begin(); tagele != (*electrons).end(); tagele++ ) {
       if(!PassOfflineElectronSelection(&*tagele,PV)) continue;
       double pttagele = tagele->pt();
       double etatagele = tagele->eta();
@@ -317,6 +336,7 @@ TriggerAnalyzerRAWMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSet
       if(!RecoHLTMatchingORIG(iEvent,etatagele,phitagele,"hltEle35noerWPTightGsfTrackIsoFilter") ) continue;
       //Second loop on the probe
       for( std::vector<pat::Electron>::const_iterator probeele = (*electrons).begin(); probeele != (*electrons).end(); probeele++ ) {
+	//for( std::vector<reco::Electron>::const_iterator probeele = (*electrons).begin(); probeele != (*electrons).end(); probeele++ ) {
 	if(tagele==probeele)continue;//Tag and Probe should be different (obviously)
 
 	if(!PassOfflineElectronSelection(&*probeele,PV)) continue;
@@ -366,8 +386,10 @@ TriggerAnalyzerRAWMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSet
     rho = *rhoJets;
     
     edm::Handle< std::vector<pat::Photon> > photons;
+    //edm::Handle< std::vector<reco::Photon> > photons;
     iEvent.getByToken(photon_token,photons );
     for( std::vector<pat::Photon>::const_iterator ph = (*photons).begin(); ph != (*photons).end(); ph++ ) {
+      //for( std::vector<reco::Photon>::const_iterator ph = (*photons).begin(); ph != (*photons).end(); ph++ ) {
       if((&*ph)->pt()<35)continue;
       bool passtightid = (&*ph)->photonID("mvaPhoID-RunIIFall17-v2-wp80");
       bool passlooseid = (&*ph)->photonID("mvaPhoID-RunIIFall17-v2-wp90");
@@ -495,11 +517,13 @@ TriggerAnalyzerRAWMiniAOD::beginJob()
   outputTree->Branch("n_vertex",&n_vertex,"n_vertex/I");
   outputTree->Branch("HLT_Ele35_WPTight_Gsf",&HLT_Ele35_WPTight_Gsf,"HLT_Ele35_WPTight_Gsf/O");
   outputTree->Branch("HLT_Photon50EB_TightID_TightIso",&HLT_Photon50EB_TightID_TightIso,"HLT_Photon50EB_TightID_TightIso/O");
+  outputTree->Branch("HLT_Photon14EB_Loose",&HLT_Photon14EB_Loose,"HLT_Photon14EB_Loose/O");
   
   outputTree->Branch("HLT_Ele32_WPTight_Gsf_ORIG",&HLT_Ele32_WPTight_Gsf_ORIG,"HLT_Ele32_WPTight_Gsf_ORIG/O");
   outputTree->Branch("HLT_Ele35_WPTight_Gsf_ORIG",&HLT_Ele35_WPTight_Gsf_ORIG,"HLT_Ele35_WPTight_Gsf_ORIG/O");
   outputTree->Branch("HLT_IsoMu24_ORIG",&HLT_IsoMu24_ORIG,"HLT_IsoMu24_ORIG/O");
   outputTree->Branch("HLT_Photon50EB_TightID_TightIso_ORIG",&HLT_Photon50EB_TightID_TightIso_ORIG,"HLT_Photon50EB_TightID_TightIso_ORIG/O");
+  outputTree->Branch("HLT_Photon14EB_Loose_ORIG",&HLT_Photon14EB_Loose_ORIG,"HLT_Photon14EB_Loose_ORIG/O");
   outputTree->Branch("HLT_Photon110EB_TightID_TightIso_ORIG",&HLT_Photon110EB_TightID_TightIso_ORIG,"HLT_Photon110EB_TightID_TightIso_ORIG/O");
   
   outputTree->Branch("probe_ele_pt",&probe_ele_pt);
@@ -554,6 +578,7 @@ TriggerAnalyzerRAWMiniAOD::fillDescriptions(edm::ConfigurationDescriptions& desc
 
 
 bool TriggerAnalyzerRAWMiniAOD::PassOfflineElectronSelection(const pat::Electron * ele, reco::Vertex::Point PV){
+  //bool TriggerAnalyzerRAWMiniAOD::PassOfflineElectronSelection(const reco::Electron * ele, reco::Vertex::Point PV){
   const reco::GsfTrackRef gsfTrack = ele->gsfTrack();
   if (!gsfTrack.isNonnull()) return false;
   if( TMath::Abs(gsfTrack->dxy(PV)) > 0.05  )  return false;
