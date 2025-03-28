@@ -674,6 +674,18 @@ bool TriggerAnalyzerRAWMiniAOD::RecoHLTMatchingHLT2(const edm::Event& iEvent, do
   if (triggerObjectsSummary.isValid()) {
     size_t filterIndex = (*triggerObjectsSummary).filterIndex( edm::InputTag(filtername,"","HLT2") );
     trigger::TriggerObjectCollection allTriggerObjects = triggerObjectsSummary->getObjects();
+    std::cout << "# ----------------------------------------------" << std::endl;
+    std::cout << "# TriggerObjectCollection is Valid!" << std::endl;
+    std::cout << "# Total number of trigger objects: " << allTriggerObjects.size() << std::endl;
+    std::cout << "# Number of filters in summary: " << triggerObjectsSummary->sizeFilters() << std::endl;
+    std::cout << "# ----------------------------------------------" << std::endl;
+
+    // Print all available filters
+    for (size_t i = 0; i < triggerObjectsSummary->sizeFilters(); i++) {
+        std::cout << "Filter[" << i << "]: " 
+                  << triggerObjectsSummary->filterTag(i).encode() << std::endl;
+    }
+
     if (filterIndex < (*triggerObjectsSummary).sizeFilters()) {
       const trigger::Keys &keys = (*triggerObjectsSummary).filterKeys(filterIndex);
       for (size_t j = 0; j < keys.size(); j++) {
