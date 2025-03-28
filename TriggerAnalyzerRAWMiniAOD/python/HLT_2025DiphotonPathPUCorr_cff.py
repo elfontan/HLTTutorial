@@ -1,6 +1,6 @@
-# hltGetConfiguration --cff /users/elfontan/2025DiphotonPath/1420_GRun11/HLT/V6 --globaltag auto:run3_data_prompt --path HLTriggerFirstPath,HLTriggerFinalPath,HLT_Photon14_Loose_v8,HLT_Ele35_WPTight_Gsf_v19,HLT_Photon50EB_TightID_TightIso_v8,HLT_Diphoton20_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton20_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton22_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton24_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton24_16_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10 --unprescale
+# hltGetConfiguration --cff /users/elfontan/2025DiphotonPath/1420_GRun11/HLT/V7 --globaltag auto:run3_data_prompt --path HLTriggerFirstPath,HLTriggerFinalPath,HLT_Photon14_Loose_v8,HLT_Ele35_WPTight_Gsf_v19,HLT_Photon50EB_TightID_TightIso_v8,HLT_Diphoton20_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton20_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton22_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton24_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton24_16_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10 --unprescale
 
-# /users/elfontan/2025DiphotonPath/1420_GRun11/HLT/V6 (CMSSW_14_2_0)
+# /users/elfontan/2025DiphotonPath/1420_GRun11/HLT/V7 (CMSSW_14_2_0)
 
 import FWCore.ParameterSet.Config as cms
 
@@ -9,7 +9,7 @@ fragment = cms.ProcessFragment( "HLT" )
 fragment.load("Configuration.StandardSequences.Accelerators_cff")
 
 fragment.HLTConfigVersion = cms.PSet(
-  tableName = cms.string("/users/elfontan/2025DiphotonPath/1420_GRun11/HLT/V6")
+  tableName = cms.string("/users/elfontan/2025DiphotonPath/1420_GRun11/HLT/V7")
 )
 
 fragment.HLTGroupedCkfTrajectoryBuilderP5 = cms.PSet( 
@@ -8826,7 +8826,7 @@ fragment.hltEGL1SingleEGLowFilter = cms.EDFilter( "HLTEgammaL1TMatchFilterRegion
 )
 fragment.hltEG14DummyFilter = cms.EDFilter( "HLTEgammaEtFilter",
     saveTags = cms.bool( True ),
-    inputTag = cms.InputTag( "hltEGL1SingleIsoEG28to45Filter" ),
+    inputTag = cms.InputTag( "hltEGL1SingleEGLowFilter" ),
     l1EGCand = cms.InputTag( "hltEgammaCandidates" ),
     etcutEB = cms.double( 14.0 ),
     etcutEE = cms.double( 9999999.0 ),
@@ -8836,15 +8836,15 @@ fragment.hltEG14DummyFilter = cms.EDFilter( "HLTEgammaEtFilter",
 )
 fragment.hltEG14DummyIsoClusterShapeFilter = cms.EDFilter( "HLTEgammaGenericFilter",
     saveTags = cms.bool( True ),
-    candTag = cms.InputTag( "hltEG50EBTightIDTightIsoEtFilter" ),
+    candTag = cms.InputTag( "hltEG14DummyFilter" ),
     varTag = cms.InputTag( 'hltEgammaClusterShape','sigmaIEtaIEta5x5NoiseCleaned' ),
     rhoTag = cms.InputTag( "" ),
     energyLowEdges = cms.vdouble( 0.0 ),
     lessThan = cms.bool( True ),
     useEt = cms.bool( False ),
     useAbs = cms.bool( False ),
-    thrRegularEB = cms.vdouble( -1.0 ),
-    thrRegularEE = cms.vdouble( -1.0 ),
+    thrRegularEB = cms.vdouble( 0.01 ),
+    thrRegularEE = cms.vdouble( 0.0 ),
     thrOverEEB = cms.vdouble( -1.0 ),
     thrOverEEE = cms.vdouble( -1.0 ),
     thrOverE2EB = cms.vdouble( -1.0 ),
@@ -8859,7 +8859,7 @@ fragment.hltEG14DummyIsoClusterShapeFilter = cms.EDFilter( "HLTEgammaGenericFilt
 )
 fragment.hltEG14DummyHEFilter = cms.EDFilter( "HLTEgammaGenericFilter",
     saveTags = cms.bool( True ),
-    candTag = cms.InputTag( "hltEG50EBTightIDTightIsoClusterShapeFilter" ),
+    candTag = cms.InputTag( "hltEG14DummyFilter" ),
     varTag = cms.InputTag( "hltEgammaHoverE" ),
     rhoTag = cms.InputTag( "hltFixedGridRhoFastjetAllCaloForMuons" ),
     energyLowEdges = cms.vdouble( 0.0 ),
@@ -8882,15 +8882,15 @@ fragment.hltEG14DummyHEFilter = cms.EDFilter( "HLTEgammaGenericFilter",
 )
 fragment.hltEG14DummyR9Filter = cms.EDFilter( "HLTEgammaGenericFilter",
     saveTags = cms.bool( True ),
-    candTag = cms.InputTag( "hltEG50EBTightIDTightIsoHEFilter" ),
+    candTag = cms.InputTag( "hltEG14DummyFilter" ),
     varTag = cms.InputTag( "hltEgammaR9ID" ),
     rhoTag = cms.InputTag( "" ),
     energyLowEdges = cms.vdouble( 0.0 ),
     lessThan = cms.bool( False ),
     useEt = cms.bool( False ),
     useAbs = cms.bool( False ),
-    thrRegularEB = cms.vdouble( -1.0 ),
-    thrRegularEE = cms.vdouble( -1.0 ),
+    thrRegularEB = cms.vdouble( 0.1 ),
+    thrRegularEE = cms.vdouble( 0.1 ),
     thrOverEEB = cms.vdouble( -1.0 ),
     thrOverEEE = cms.vdouble( -1.0 ),
     thrOverE2EB = cms.vdouble( -1.0 ),
@@ -8905,17 +8905,17 @@ fragment.hltEG14DummyR9Filter = cms.EDFilter( "HLTEgammaGenericFilter",
 )
 fragment.hltEG14DummyEcalIsoFilter = cms.EDFilter( "HLTEgammaGenericQuadraticFilter",
     saveTags = cms.bool( True ),
-    candTag = cms.InputTag( "hltEG50EBTightIDTightIsoR9Filter" ),
+    candTag = cms.InputTag( "hltEG14DummyFilter" ),
     varTag = cms.InputTag( "hltEgammaEcalPFClusterIsoDr0p2" ),
     rhoTag = cms.InputTag( "hltFixedGridRhoFastjetAllCaloForMuons" ),
     energyLowEdges = cms.vdouble( 0.0 ),
     lessThan = cms.bool( True ),
     useEt = cms.bool( True ),
     useAbs = cms.bool( False ),
-    thrRegularEB = cms.vdouble( -1.0 ),
-    thrRegularEE = cms.vdouble( -1.0 ),
-    thrOverEEB = cms.vdouble( -1.0 ),
-    thrOverEEE = cms.vdouble( -1.0 ),
+    thrRegularEB = cms.vdouble( 2.0 ),
+    thrRegularEE = cms.vdouble( 2.5 ),
+    thrOverEEB = cms.vdouble( 0.2 ),
+    thrOverEEE = cms.vdouble( 0.0 ),
     thrOverE2EB = cms.vdouble( 0.0 ),
     thrOverE2EE = cms.vdouble( 0.0 ),
     ncandcut = cms.int32( 1 ),
@@ -8928,14 +8928,14 @@ fragment.hltEG14DummyEcalIsoFilter = cms.EDFilter( "HLTEgammaGenericQuadraticFil
 )
 fragment.hltEG14DummyHcalIsoFilter = cms.EDFilter( "HLTEgammaGenericQuadraticFilter",
     saveTags = cms.bool( True ),
-    candTag = cms.InputTag( "hltEG50EBTightIDTightIsotEcalIsoFilter" ),
+    candTag = cms.InputTag( "hltEG14DummyFilter" ),
     varTag = cms.InputTag( "hltEgammaHcalPFClusterIso" ),
     rhoTag = cms.InputTag( "hltFixedGridRhoFastjetAllCaloForMuons" ),
     energyLowEdges = cms.vdouble( 0.0 ),
     lessThan = cms.bool( True ),
     useEt = cms.bool( True ),
     useAbs = cms.bool( False ),
-    thrRegularEB = cms.vdouble( 0.0 ),
+    thrRegularEB = cms.vdouble( 3.5 ),
     thrRegularEE = cms.vdouble( 0.0 ),
     thrOverEEB = cms.vdouble( 0.005 ),
     thrOverEEE = cms.vdouble( 0.0 ),
@@ -8951,7 +8951,7 @@ fragment.hltEG14DummyHcalIsoFilter = cms.EDFilter( "HLTEgammaGenericQuadraticFil
 )
 fragment.hltEG14DummyTrackIsoFilter = cms.EDFilter( "HLTEgammaGenericQuadraticFilter",
     saveTags = cms.bool( True ),
-    candTag = cms.InputTag( "hltEG50EBTightIDTightIsoHcalIsoFilter" ),
+    candTag = cms.InputTag( "hltEG14DummyFilter" ),
     varTag = cms.InputTag( "hltEgammaHollowTrackIsoDr0p2" ),
     rhoTag = cms.InputTag( "hltFixedGridRhoFastjetAllCaloForMuons" ),
     energyLowEdges = cms.vdouble( 0.0 ),
@@ -8960,8 +8960,8 @@ fragment.hltEG14DummyTrackIsoFilter = cms.EDFilter( "HLTEgammaGenericQuadraticFi
     useAbs = cms.bool( False ),
     thrRegularEB = cms.vdouble( 0.0 ),
     thrRegularEE = cms.vdouble( 0.0 ),
-    thrOverEEB = cms.vdouble( -1.0 ),
-    thrOverEEE = cms.vdouble( -1.0 ),
+    thrOverEEB = cms.vdouble( 0.01 ),
+    thrOverEEE = cms.vdouble( 0.01 ),
     thrOverE2EB = cms.vdouble( 0.0 ),
     thrOverE2EE = cms.vdouble( 0.0 ),
     ncandcut = cms.int32( 1 ),
