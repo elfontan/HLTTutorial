@@ -15,10 +15,10 @@ eval `scramv1 runtime -sh` # cmsenv is an alias not on the workers
 skipEvents=$((${4}*${5}))
 line=$((${4}+1))
 inFile=$(awk "NR == ${line}" ${7})
-cd ${10}/
-cmsRun ${6} inputFiles=${inFile} #maxEvents=${5} #skipEvents=${skipEvents}
-cp ${8} ${1}/${8}_${4}.root
-cp ${9} ${1}/${9}_${4}.root
+#cd ${10}/
+cmsRun ${10}/${6} inputFiles=${inFile} #maxEvents=${5} #skipEvents=${skipEvents}
+cp ${8} ${1}/out_nano_${4}.root
+cp ${9} ${1}/out_nanoCustom_${4}.root
 rm ${8}
 rm ${9}
 cd ${_CONDOR_SCRATCH_DIR}

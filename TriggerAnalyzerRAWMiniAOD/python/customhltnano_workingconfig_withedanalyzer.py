@@ -31,30 +31,17 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
-import FWCore.ParameterSet.VarParsing as VarParsing # ADDED                                                                                                          
-import FWCore.Utilities.FileUtils as FileUtils # ADDED
-
-options = VarParsing.VarParsing ('analysis')
-
-options.register('skipEvents',
-                 0,
-                 VarParsing.VarParsing.multiplicity.singleton,
-                 VarParsing.VarParsing.varType.int,
-                 "Number of events to skip")
-
-options.parseArguments()
-
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(options.maxEvents)
+    input = cms.untracked.int32(-1),
+    output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
-process.source = cms.Source( "PoolSource",
-    skipEvents = cms.untracked.uint32(options.skipEvents),
-    fileNames = cms.untracked.vstring(
-        options.inputFiles
-    )
+# Input source
+process.source = cms.Source("PoolSource",
+                            fileNames = cms.untracked.vstring('/store/data/Run2024I/EGamma0/RAW-RECO/ZElectron-PromptReco-v2/000/386/694/00000/05ad2e1f-93d3-4e3e-98a5-e5c911bc410b.root'),
+                            #fileNames = cms.untracked.vstring('file:/pnfs/iihe/cms/ph/sc4/store/data/Run2024I/EGamma0/RAW-RECO/ZElectron-PromptReco-v1/000/386/604/00000/83e85753-f40e-4b45-9056-66eda6cfa7ea.root'),
+                            secondaryFileNames = cms.untracked.vstring()
 )
-#/store/data/Run2024I/EGamma0/RAW-RECO/ZElectron-PromptReco-v2/000/386/694/00000/05ad2e1f-93d3-4e3e-98a5-e5c911bc410b.root
 
 process.options = cms.untracked.PSet(
     IgnoreCompletely = cms.untracked.vstring(),
@@ -104,7 +91,7 @@ process.NANOAODoutput = cms.OutputModule("NanoAODOutputModule",
         dataTier = cms.untracked.string('NANOAOD'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('file:out_nano.root'),
+    fileName = cms.untracked.string('file:outNANO.root'),
     outputCommands = process.NANOAODEventContent.outputCommands
 )
 
@@ -157,7 +144,7 @@ process.demo = cms.EDAnalyzer('TriggerAnalyzerRAWMiniAOD',
                               UseMINIAOD = cms.bool(True)
 )
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string( "out_nanoCustom.root" )
+                                   fileName = cms.string( "out.root" )
                                    )
 process.demo_step = cms.EndPath(process.demo)
 
