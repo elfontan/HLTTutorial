@@ -48,7 +48,8 @@ ea_info = {}  # New dict to store ea values and formulas per (var, pt_eta_key)
 # Initialize histograms for three pt ranges
 # -----------------------------------------
 histos = {}
-pt_eta_ranges = ["20-50_EB_0-1", "20-50_EB_1-1p5", "20-50_EE_1p5-2p1", "20-50_EE_2p1-2p5", "10-20_EB_0-1", "10-20_EB_1-1p5", "10-20_EE_1p5-2p1", "10-20_EE_2p1-2p5", "5-10_EB_0-1", "5-10_EB_1-1p5", "5-10_EE_1p5-2p1", "5-10_EE_2p1-2p5"]
+pt_eta_ranges = ["20-50_EB_0-1", "20-50_EB_1-1p5", "20-50_EE_1p5-2p1", "10-20_EB_0-1", "10-20_EB_1-1p5", "10-20_EE_1p5-2p1", "5-10_EB_0-1", "5-10_EB_1-1p5", "5-10_EE_1p5-2p1"]
+#pt_eta_ranges = ["20-50_EB_0-1", "20-50_EB_1-1p5", "20-50_EE_1p5-2p1", "20-50_EE_2p1-2p5", "10-20_EB_0-1", "10-20_EB_1-1p5", "10-20_EE_1p5-2p1", "10-20_EE_2p1-2p5", "5-10_EB_0-1", "5-10_EB_1-1p5", "5-10_EE_1p5-2p1", "5-10_EE_2p1-2p5"]
 
 for var, cfg in variables.items():
     histos[var] = {}
@@ -93,8 +94,8 @@ for root_file in root_files:
                 region = "EB_1-1p5"
             elif (abs(eta) > 1.479 and abs(eta) <= 2.1):
                 region = "EE_1p5-2p1"
-            elif (abs(eta) > 2.1 and abs(eta) <= 2.5):
-                region = "EE_2p1-2p5"
+            #elif (abs(eta) > 2.1 and abs(eta) <= 2.5):
+            #    region = "EE_2p1-2p5"
 
             pt_eta_key = f"{pt_range}_{region}"
             
@@ -158,19 +159,19 @@ colors = {
     "5-10_EB_0-1":        "royalblue",
     "5-10_EB_1-1p5":      "cornflowerblue",
     "5-10_EE_1p5-2p1":    "skyblue",
-    "5-10_EE_2p1-2p5":    "lightblue",
+    #"5-10_EE_2p1-2p5":    "lightblue",
 
     # 10-20 GeV
     "10-20_EB_0-1":       "mediumseagreen",
     "10-20_EB_1-1p5":     "mediumaquamarine",
     "10-20_EE_1p5-2p1":   "springgreen",
-    "10-20_EE_2p1-2p5":   "palegreen",
+    #"10-20_EE_2p1-2p5":   "palegreen",
 
     # 20-50 GeV
     "20-50_EB_0-1":       "tomato",
     "20-50_EB_1-1p5":     "lightsalmon",
     "20-50_EE_1p5-2p1":   "coral",
-    "20-50_EE_2p1-2p5":   "moccasin",
+    #"20-50_EE_2p1-2p5":   "moccasin",
 }
 
 for var, cfg in variables.items():

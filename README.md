@@ -27,7 +27,7 @@ Obtain the configuration file from the dedicated menu with the following recipe:
 ```
 hltGetConfiguration --cff /users/lathomas/Photon2025/HLTDiphotonLowMass/V14 --globaltag auto:run3_data_prompt --path HLTriggerFirstPath,HLTriggerFinalPath,HLT_Ele5_PassFilters_v1,HLT_Diphoton30_18_R9IdL_AND_HE_AND_IsoCaloId_v11,HLT_Ele32_WPTight_Gsf_v25,HLT_Photon40EB_TightID_TightIso_v3,HLT_Photon45EB_TightID_TightIso_v3,HLT_Diphoton15_10_TightID_ECALTrackIsoDr0p2_EBEB_v11,HLT_Diphoton15_10_TightID_ECALTrackIsoDr0p2to0p4_EBEB_v11 --unprescale &> HLT_DiphotonLowMass_cff.py
 ```
-and move it in the `HLTrigger/Configuration` area.
+and move it in the `HLTrigger/Configuration/python/` area.
 
 The `customhltnano.py` is provided in the repository. In case it is needed to recreate it, copy the menu configuration in `Configuration/python` as `HLT_Custom_cff.py`:
 ```
@@ -37,7 +37,7 @@ and run cmsDriver command to build the chain down to nanoAOD:
 ```
 cmsDriver.py customHLT --conditions auto:run3_data_prompt -s RAW2DIGI,L1Reco,HLT:Custom,PAT,NANO:@PHYS --datatier NANOAOD --eventcontent NANOAOD --data --process customhltnano --scenario pp --era Run3 --customise Configuration/DataProcessing/RecoTLR.customisePostEra_Run3 -n 100 --filein /store/data/Run2024I/EGamma0/RAW-RECO/ZElectron-PromptReco-v2/000/386/694/00000/05ad2e1f-93d3-4e3e-98a5-e5c911bc410b.root --fileout file:out.root --python_filename=customhltnano.py
 ```
-then modify the `customhltnano.py` configuration to run also the specifi photon ntupliser:
+then modify the `customhltnano.py` configuration to run also the specific photon ntupliser:
 ```
 process.demo = cms.EDAnalyzer('TriggerAnalyzerRAWMiniAOD',                                                                      
                               UseMINIAOD = cms.bool(True)                                                                                                
