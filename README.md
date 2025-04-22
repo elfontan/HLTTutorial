@@ -4,8 +4,8 @@
 ## Setup
 Setup the release, import HLTrigger package, compile
 ```
-cmsrel CMSSW_14_2_0
-cd CMSSW_14_2_0/src
+cmsrel CMSSW_15_0_3_patch1
+cd CMSSW_15_0_3_patch1/src
 cmsenv
 git cms-addpkg HLTrigger/Configuration
 scram b -j 8
@@ -25,17 +25,19 @@ scram b -j4
 
 Obtain the configuration file from the dedicated menu with the following recipe:
 ```
-hltGetConfiguration --cff /users/elfontan/2025DiphotonPath/1420_GRun11/HLT/V7 --globaltag auto:run3_data_prompt --path HLTriggerFirstPath,HLTriggerFinalPath,HLT_Photon14_Loose_v8,HLT_Ele35_WPTight_Gsf_v19,HLT_Photon50EB_TightID_TightIso_v8,HLT_Diphoton20_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton20_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton22_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton24_14_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10,HLT_Diphoton24_16_eta1p5_R9IdL_AND_HET_AND_IsoTCaloIdT_v10 --unprescale &> HLT_2025DiphotonPathPUCorr_cff.py
+hltGetConfiguration --cff /users/lathomas/Photon2025/HLTDiphotonLowMass/V14 --globaltag auto:run3_data_prompt --path HLTriggerFirstPath,HLTriggerFinalPath,HLT_Ele5_PassFilters_v1,HLT_Diphoton30_18_R9IdL_AND_HE_AND_IsoCaloId_v11,HLT_Ele32_WPTight_Gsf_v25,HLT_Photon40EB_TightID_TightIso_v3,HLT_Photon45EB_TightID_TightIso_v3,HLT_Diphoton15_10_TightID_ECALTrackIsoDr0p2_EBEB_v11,HLT_Diphoton15_10_TightID_ECALTrackIsoDr0p2to0p4_EBEB_v11 --unprescale &> HLT_DiphotonLowMass_cff.py
 ```
-and move it in the `HLTrigger/Configuration` area to be able to use it as a customisation in a cmsDriver command: 
+and move it in the `HLTrigger/Configuration` area.
+
+The `customhltnano.py` is provided in the repository. In case it is needed to recreate it, copy the menu configuration in `Configuration/python` as `HLT_Custom_cff.py`:
 ```
 cp  HLTTutorial/TriggerAnalyzerRAWMiniAOD/python/HLT_2025DiphotonPathPUCorr_cff.py HLTrigger/Configuration/python/HLT_Custom_cff.py
 ```
-Run cmsDriver command to build the chain down to nanoAOD:
+and run cmsDriver command to build the chain down to nanoAOD:
 ```
 cmsDriver.py customHLT --conditions auto:run3_data_prompt -s RAW2DIGI,L1Reco,HLT:Custom,PAT,NANO:@PHYS --datatier NANOAOD --eventcontent NANOAOD --data --process customhltnano --scenario pp --era Run3 --customise Configuration/DataProcessing/RecoTLR.customisePostEra_Run3 -n 100 --filein /store/data/Run2024I/EGamma0/RAW-RECO/ZElectron-PromptReco-v2/000/386/694/00000/05ad2e1f-93d3-4e3e-98a5-e5c911bc410b.root --fileout file:out.root --python_filename=customhltnano.py
 ```
-and modify the `customhltnano.py` configuration to run also the specifi photon ntupliser:
+then modify the `customhltnano.py` configuration to run also the specifi photon ntupliser:
 ```
 process.demo = cms.EDAnalyzer('TriggerAnalyzerRAWMiniAOD',                                                                      
                               UseMINIAOD = cms.bool(True)                                                                                                
