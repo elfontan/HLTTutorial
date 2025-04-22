@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: customHLT --conditions auto:run3_data_prompt -s RAW2DIGI,L1Reco,HLT:Custom,PAT,NANO:@PHYS --datatier NANOAOD --eventcontent NANOAOD --data --process customhltnano --scenario pp --era Run3 --customise Configuration/DataProcessing/RecoTLR.customisePostEra_Run3 -n 100 --filein /store/data/Run2024I/EGamma0/RAW-RECO/ZElectron-PromptReco-v2/000/386/694/00000/05ad2e1f-93d3-4e3e-98a5-e5c911bc410b.root --fileout file:out.root --python_filename=customhltnano.py
+# with command line options: customHLT --conditions auto:run3_data_prompt -s RAW2DIGI,L1Reco,HLT:Custom,PAT,NANO:@PHYS --datatier NANOAOD --eventcontent NANOAOD --data --process customhltnano --scenario pp --era Run3 --customise Configuration/DataProcessing/RecoTLR.customisePostEra_Run3 -n 100 --filein file:/pnfs/iihe/cms/ph/sc4/store/data/Run2024I/EGamma0/RAW-RECO/ZElectron-PromptReco-v1/000/386/604/00000/64ffc9b9-f956-40ee-9cd3-5708c65b6605.root --fileout file:out.root --python_filename=customhltnano.py
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run3_cff import Run3
@@ -18,12 +18,18 @@ process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
 process.load('Configuration.StandardSequences.L1Reco_cff')
-process.load('HLTrigger.Configuration.HLT_Custom_cff')
+#process.load('HLTrigger.Configuration.HLT_Custom_cff')
+#process.load('HLTrigger.Configuration.myhlt_HLTDiphotonLowMass_V6_cff')
+process.load('HLTrigger.Configuration.HLT_DiphotonLowMass_cff')
+#process.load('HLTrigger.Configuration.HLT_CustomRun3_cff')
+#process.load('HLTrigger.Configuration.HLT_ElePhoton_SK12_26_cff')
 process.load('PhysicsTools.PatAlgos.slimming.metFilterPaths_cff')
 process.load('Configuration.StandardSequences.PAT_cff')
 process.load('PhysicsTools.NanoAOD.nano_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 import FWCore.ParameterSet.VarParsing as VarParsing # ADDED                                                                                                          
 import FWCore.Utilities.FileUtils as FileUtils # ADDED
@@ -35,11 +41,6 @@ options.register('skipEvents',
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.int,
                  "Number of events to skip")
-options.register('outFile',
-                 'outputGGH20.root',
-                 VarParsing.VarParsing.multiplicity.singleton,
-                 VarParsing.VarParsing.varType.string,
-                 'Output file')
 
 options.parseArguments()
 
@@ -53,6 +54,7 @@ process.source = cms.Source( "PoolSource",
         options.inputFiles
     )
 )
+#/store/data/Run2024I/EGamma0/RAW-RECO/ZElectron-PromptReco-v2/000/386/694/00000/05ad2e1f-93d3-4e3e-98a5-e5c911bc410b.root
 
 process.options = cms.untracked.PSet(
     IgnoreCompletely = cms.untracked.vstring(),
@@ -150,20 +152,21 @@ process.nanoAOD_step = cms.Path(process.nanoSequence)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 process.NANOAODoutput_step = cms.EndPath(process.NANOAODoutput)
 
-process.demo = cms.EDAnalyzer('TriggerAnalyzerRAWMiniAOD',                                                                            
-                              UseMINIAOD = cms.bool(True)                                                                                                                   
-)                                                                                                                                                                                                                  
-process.TFileService = cms.Service("TFileService",                                                                                                                           
-                                   fileName = cms.string( "out_nanoCustom.root" )                                                                                                            
-                                   )                                                                                                                                                       
-process.demo_step = cms.EndPath(process.demo)                                                                                                           
+
+process.demo = cms.EDAnalyzer('TriggerAnalyzerRAWMiniAOD',
+                              UseMINIAOD = cms.bool(True)
+)
+process.TFileService = cms.Service("TFileService",
+                                   fileName = cms.string( "out_nanoCustom.root" )
+                                   )
+process.demo_step = cms.EndPath(process.demo)
+
 
 # Schedule definition
 # process.schedule imported from cff in HLTrigger.Configuration
 process.schedule.insert(0, process.raw2digi_step)
 process.schedule.insert(1, process.L1Reco_step)
 process.schedule.extend([process.Flag_HBHENoiseFilter,process.Flag_HBHENoiseIsoFilter,process.Flag_CSCTightHaloFilter,process.Flag_CSCTightHaloTrkMuUnvetoFilter,process.Flag_CSCTightHalo2015Filter,process.Flag_globalTightHalo2016Filter,process.Flag_globalSuperTightHalo2016Filter,process.Flag_HcalStripHaloFilter,process.Flag_hcalLaserEventFilter,process.Flag_EcalDeadCellTriggerPrimitiveFilter,process.Flag_EcalDeadCellBoundaryEnergyFilter,process.Flag_ecalBadCalibFilter,process.Flag_goodVertices,process.Flag_eeBadScFilter,process.Flag_ecalLaserCorrFilter,process.Flag_trkPOGFilters,process.Flag_chargedHadronTrackResolutionFilter,process.Flag_muonBadTrackFilter,process.Flag_BadChargedCandidateFilter,process.Flag_BadPFMuonFilter,process.Flag_BadPFMuonDzFilter,process.Flag_hfNoisyHitsFilter,process.Flag_BadChargedCandidateSummer16Filter,process.Flag_BadPFMuonSummer16Filter,process.Flag_trkPOG_manystripclus53X,process.Flag_trkPOG_toomanystripclus53X,process.Flag_trkPOG_logErrorTooManyClusters,process.nanoAOD_step,process.endjob_step,process.NANOAODoutput_step,process.demo_step])
-
 process.schedule.associate(process.patTask)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
@@ -193,6 +196,18 @@ from PhysicsTools.PatAlgos.slimming.miniAOD_tools import miniAOD_customizeAllDat
 process = miniAOD_customizeAllData(process)
 
 # End of customisation functions
+
+process.GlobalTag.toGet = cms.VPSet(
+    cms.PSet(record = cms.string('EcalTPGSpikeRcd'),
+             tag = cms.string('EcalTPGSpike_16'),
+             connect =cms.string('frontier://FrontierProd/CMS_CONDITIONS')
+         ),
+    cms.PSet(record = cms.string('EcalTPGFineGrainStripEERcd'),
+             tag = cms.string('EcalTPGFineGrainStrip_26'),
+             #tag = cms.string('EcalTPGFineGrainStrip_26),
+             connect =cms.string('frontier://FrontierProd/CMS_CONDITIONS')
+         )
+)
 
 # Customisation from command line
 

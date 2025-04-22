@@ -7,24 +7,20 @@ ts = calendar.timegm(time.gmtime())
 fileName = "out_nano.root"
 fileName2 = "out_nanoCustom.root"
 jobName = "reHLT_ZElectron"
-#fileName = "outputGGH20.root"
-#jobName = "reHLT_GGH20"
 jobScript = "cmsRun.sh"
 jobCfg = "custom_reHLT_plusNano.py"
-rel = "CMSSW_14_2_0"
+rel = "CMSSW_15_0_3_patch1"
 eosDir = "/eos/user/e/elfontan/DiPhotonAnalysis/Run3_Trigger/reHLT_ZElectron/condor/" + jobName + "_" + str(ts) + "/"
-#eosDir = "/eos/user/e/elfontan/DiPhotonAnalysis/Run3_Trigger/reHLT_ggH20/condor/" + jobName + "_" + str(ts) + "/"
 rootDir = os.environ["CMSSW_BASE"] + "/src/HLTTutorial/TriggerAnalyzerRAWMiniAOD/condorSub/"
 jobDir = rootDir + jobName + "_" + str(ts) + "/"
 ret = 0
 
+#fileList = rootDir + "red_listFiles_EGamma_ZElectron-PromptReco.txt"
+#nEvents = 1000
+#nJobs = 3
 fileList = rootDir + "listFiles_EGamma_ZElectron-PromptReco.txt"
 nEvents = 1000
 nJobs = 2952
-### Settings to run on MC /GluGluHTo2G_Par-MH-20_TuneCP5_13p6TeV_powheg-pythia8/Run3Winter25Digi-142X_mcRun3_2025_realistic_v7-v2/GEN-SIM-RAW
-#fileList = rootDir + "listFiles_GluGluHToGG_M20_Run3Winter25.txt"
-#nEvents = 1470
-#nJobs = 1356
 
 
 while ret == 0:
